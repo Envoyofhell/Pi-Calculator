@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabbed Multi-Calculator Deluxe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Press+Start+2P&family=Monospace&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-container theme-pi" id="main-container">
+
+        <div class="tab-nav">
+            <button class="tab-button active" data-tab="pi">Pi Calculator</button>
+            <button class="tab-button" data-tab="matrix">Matrix</button>
+            <button class="tab-button" data-tab="warp">Warp Drive</button>
+        </div>
+
+        <input type="file" id="load-file-input" accept=".json">
+
+        <div id="tab-content-area">
+
+            <div id="pi-tab" class="tab-content active">
+                <h2 class="tab-title">Pi Calculator</h2>
+                <div class="display-area">
+                    <div class="pi-digits-display" id="pi-digits"></div>
+                </div>
+                <div class="counter-area">
+                    <span class="counter-label">Digits:</span>
+                    <span class="counter-display" id="pi-count">0</span>
+                </div>
+                <div class="controls-area">
+                    <div class="slider-container">
+                        <label for="pi-speed-slider" class="slider-label">
+                            Base Speed (<span id="pi-speed-value" class="slider-value">5</span>)
+                        </label>
+                        <input type="range" id="pi-speed-slider" min="1" max="10" value="5" class="slider">
+                        <div class="slider-description">Delay: <span id="pi-current-delay">?</span> ms (Gets faster!)</div>
+                    </div>
+                    <div class="slider-container">
+                        <label for="pi-complexity-slider" class="slider-label">
+                            Confetti (<span id="pi-complexity-value" class="slider-value">5</span>)
+                        </label>
+                        <input type="range" id="pi-complexity-slider" min="0" max="10" value="5" step="1" class="slider">
+                        <div class="slider-description">Amount / Frequency</div>
+                    </div>
+                </div>
+                <div class="button-controls">
+                    <button id="pi-start-btn" class="btn btn-start" data-tab="pi">Start</button>
+                    <button id="pi-continue-btn" class="btn btn-continue" data-tab="pi" style="display: none;">Continue</button>
+                    <button id="pi-pause-btn" class="btn btn-pause" data-tab="pi" disabled>Pause</button>
+                </div>
+                <div class="button-controls">
+                     <button id="pi-save-btn" class="btn btn-save" data-tab="pi">Save State</button>
+                     <button id="pi-load-btn" class="btn btn-load" data-tab="pi">Load State</button>
+                </div>
+            </div>
+
+            <div id="matrix-tab" class="tab-content">
+                 <h2 class="tab-title">Matrix Counter</h2>
+                 <div class="display-area">
+                    <canvas id="matrix-canvas" class="canvas-display"></canvas>
+                 </div>
+                 <div class="counter-area">
+                    <span class="counter-label">Chars:</span>
+                    <span class="counter-display" id="matrix-count">0</span>
+                 </div>
+                 <div class="controls-area">
+                     <div class="slider-container">
+                        <label for="matrix-speed-slider" class="slider-label">
+                            Rain Speed (<span id="matrix-speed-value" class="slider-value">5</span>)
+                        </label>
+                        <input type="range" id="matrix-speed-slider" min="1" max="10" value="5" class="slider">
+                        <div class="slider-description">Frame Interval: <span id="matrix-current-delay">?</span> ms</div>
+                     </div>
+                     <div class="slider-container">
+                        <label for="matrix-complexity-slider" class="slider-label">
+                            Effects (<span id="matrix-complexity-value" class="slider-value">5</span>)
+                        </label>
+                        <input type="range" id="matrix-complexity-slider" min="1" max="10" value="5" step="1" class="slider">
+                        <div class="slider-description">Density / Fading / Glow</div>
+                     </div>
+                 </div>
+                 <div class="button-controls">
+                    <button id="matrix-start-btn" class="btn btn-start" data-tab="matrix">Start</button>
+                    <button id="matrix-pause-btn" class="btn btn-pause" data-tab="matrix" disabled>Pause</button>
+                 </div>
+                 <div class="button-controls">
+                     <button id="matrix-save-btn" class="btn btn-save" data-tab="matrix">Save State</button>
+                     <button id="matrix-load-btn" class="btn btn-load" data-tab="matrix">Load State</button>
+                 </div>
+            </div>
+
+            <div id="warp-tab" class="tab-content">
+                 <h2 class="tab-title">Warp Drive Counter</h2>
+                 <div class="display-area">
+                    <canvas id="warp-canvas" class="canvas-display"></canvas>
+                 </div>
+                 <div class="counter-area">
+                    <span class="counter-label">Stars Passed:</span>
+                    <span class="counter-display" id="warp-count">0</span>
+                 </div>
+                 <div class="controls-area">
+                    <div class="slider-container">
+                        <label for="warp-speed-slider" class="slider-label">
+                            Warp Speed (<span id="warp-speed-value" class="slider-value">3</span>)
+                        </label>
+                        <input type="range" id="warp-speed-slider" min="1" max="10" value="3" class="slider">
+                        <div class="slider-description">(Internal Speed Factor)</div>
+                    </div>
+                    <div class="slider-container">
+                        <label for="warp-complexity-slider" class="slider-label">
+                            Stars (<span id="warp-complexity-value" class="slider-value">300</span>)
+                        </label>
+                        <input type="range" id="warp-complexity-slider" min="50" max="1000" value="300" step="10" class="slider">
+                         <div class="slider-description">Number of Stars</div>
+                    </div>
+                </div>
+                 <div class="button-controls">
+                    <button id="warp-start-btn" class="btn btn-start" data-tab="warp">Start</button>
+                    <button id="warp-pause-btn" class="btn btn-pause" data-tab="warp" disabled>Pause</button>
+                 </div>
+                  <div class="button-controls">
+                     <button id="warp-save-btn" class="btn btn-save" data-tab="warp">Save State</button>
+                     <button id="warp-load-btn" class="btn btn-load" data-tab="warp">Load State</button>
+                 </div>
+            </div>
+
+        </div> <div id="message-box" class="message-box">
+            Select a tab and press Start.
+        </div>
+
+         <div id="confetti-container"></div>
+
+    </div> <script>
+        // --- Global DOM Elements ---
+        const mainContainer = document.getElementById('main-container');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const messageBox = document.getElementById('message-box');
+        const loadFileInput = document.getElementById('load-file-input');
+        const confettiContainer = document.getElementById('confetti-container');
+
+        // --- State Management Object ---
+        const appState = {
+            activeTab: 'pi',
+            pi: {
+                // DOM Elements
+                displayElement: document.getElementById('pi-digits'),
+                countElement: document.getElementById('pi-count'),
+                speedSlider: document.getElementById('pi-speed-slider'),
+                speedValueElement: document.getElementById('pi-speed-value'),
+                delayDisplayElement: document.getElementById('pi-current-delay'),
+                complexitySlider: document.getElementById('pi-complexity-slider'), // New
+                complexityValueElement: document.getElementById('pi-complexity-value'), // New
+                startBtn: document.getElementById('pi-start-btn'),
+                continueBtn: document.getElementById('pi-continue-btn'),
+                pauseBtn: document.getElementById('pi-pause-btn'),
+                saveBtn: document.getElementById('pi-save-btn'),
+                loadBtn: document.getElementById('pi-load-btn'),
+                // State
+                count: 0, digits: "3.", isPaused: true, hasStarted: false, generator: null,
+                intervalId: null, baseSpeed: 5, currentDelay: null, minDelay: 5,
+                speedUpFactor: 0.995, speedUpInterval: 100, complexity: 5, // New state
+                confettiColors: ['#f1c40f', '#e67e22', '#f39c12', '#e74c3c', '#d35400'] // Pi theme colors
+            },
+            matrix: {
+                // DOM Elements
+                canvas: document.getElementById('matrix-canvas'),
+                countElement: document.getElementById('matrix-count'),
+                speedSlider: document.getElementById('matrix-speed-slider'),
+                speedValueElement: document.getElementById('matrix-speed-value'),
+                delayDisplayElement: document.getElementById('matrix-current-delay'),
+                complexitySlider: document.getElementById('matrix-complexity-slider'), // New
+                complexityValueElement: document.getElementById('matrix-complexity-value'), // New
+                startBtn: document.getElementById('matrix-start-btn'),
+                pauseBtn: document.getElementById('matrix-pause-btn'),
+                saveBtn: document.getElementById('matrix-save-btn'),
+                loadBtn: document.getElementById('matrix-load-btn'),
+                // State
+                ctx: null, animationId: null, count: 0, columns: 0, drops: [],
+                fontSize: 16, chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%+-/~{[|`]}",
+                isPaused: true, baseSpeed: 5, currentDelay: null, minDelay: 16, maxDelay: 200,
+                complexity: 5 // New state
+            },
+            warp: {
+                // DOM Elements
+                canvas: document.getElementById('warp-canvas'),
+                countElement: document.getElementById('warp-count'),
+                speedSlider: document.getElementById('warp-speed-slider'),
+                speedValueElement: document.getElementById('warp-speed-value'),
+                complexitySlider: document.getElementById('warp-complexity-slider'), // New
+                complexityValueElement: document.getElementById('warp-complexity-value'), // New
+                startBtn: document.getElementById('warp-start-btn'),
+                pauseBtn: document.getElementById('warp-pause-btn'),
+                saveBtn: document.getElementById('warp-save-btn'),
+                loadBtn: document.getElementById('warp-load-btn'),
+                // State
+                ctx: null, animationId: null, count: 0, stars: [], starNum: 300, // Star num now dynamic
+                speed: 3, isPaused: true, complexity: 300 // New state (matches initial starNum)
+            }
+        };
+
+        // --- Initialization ---
+        function initializeTabs() {
+            // Calculate initial delays & set values
+            appState.pi.currentDelay = calculatePiDelay(appState.pi.baseSpeed);
+            appState.pi.delayDisplayElement.textContent = appState.pi.currentDelay.toFixed(1);
+            appState.pi.speedValueElement.textContent = appState.pi.baseSpeed;
+            appState.pi.complexityValueElement.textContent = appState.pi.complexity; // Init complexity display
+
+            appState.matrix.currentDelay = calculateMatrixDelay(appState.matrix.baseSpeed);
+            appState.matrix.delayDisplayElement.textContent = appState.matrix.currentDelay.toFixed(1);
+            appState.matrix.speedValueElement.textContent = appState.matrix.baseSpeed;
+            appState.matrix.complexityValueElement.textContent = appState.matrix.complexity; // Init complexity display
+
+            appState.warp.speedValueElement.textContent = appState.warp.speed;
+            appState.warp.complexityValueElement.textContent = appState.warp.complexity; // Init complexity display
+            appState.warp.starNum = appState.warp.complexity; // Sync initial star num
+
+            // Add event listeners
+            tabButtons.forEach(button => button.addEventListener('click', handleTabClick));
+
+            // Pi listeners (including complexity)
+            appState.pi.startBtn.addEventListener('click', startPi);
+            appState.pi.continueBtn.addEventListener('click', continuePi);
+            appState.pi.pauseBtn.addEventListener('click', pausePi);
+            appState.pi.speedSlider.addEventListener('input', handlePiSpeedChange);
+            appState.pi.complexitySlider.addEventListener('input', handlePiComplexityChange); // New
+            appState.pi.saveBtn.addEventListener('click', () => saveState('pi'));
+            appState.pi.loadBtn.addEventListener('click', () => triggerLoadFile('pi'));
+
+            // Matrix listeners (including complexity)
+            appState.matrix.startBtn.addEventListener('click', startMatrix);
+            appState.matrix.pauseBtn.addEventListener('click', pauseMatrix);
+            appState.matrix.speedSlider.addEventListener('input', handleMatrixSpeedChange);
+            appState.matrix.complexitySlider.addEventListener('input', handleMatrixComplexityChange); // New
+            appState.matrix.saveBtn.addEventListener('click', () => saveState('matrix'));
+            appState.matrix.loadBtn.addEventListener('click', () => triggerLoadFile('matrix'));
+
+            // Warp listeners (including complexity)
+            appState.warp.startBtn.addEventListener('click', startWarp);
+            appState.warp.pauseBtn.addEventListener('click', pauseWarp);
+            appState.warp.speedSlider.addEventListener('input', handleWarpSpeedChange);
+            appState.warp.complexitySlider.addEventListener('input', handleWarpComplexityChange); // New
+            appState.warp.saveBtn.addEventListener('click', () => saveState('warp'));
+            appState.warp.loadBtn.addEventListener('click', () => triggerLoadFile('warp'));
+
+            // File input listener
+            loadFileInput.addEventListener('change', handleFileLoad);
+
+            // Initial setup for canvases
+            appState.matrix.ctx = appState.matrix.canvas.getContext('2d');
+            appState.warp.ctx = appState.warp.canvas.getContext('2d');
+            resizeMatrixCanvas();
+            resizeWarpCanvas(); // Will use initial complexity for starNum
+            window.addEventListener('resize', debounce(handleGlobalResize, 150));
+
+            // Set initial theme class
+            mainContainer.className = `main-container theme-${appState.activeTab}`;
+
+            showMessage('Select a tab and press Start.', 'info');
+        }
+
+        // --- Debounce Utility ---
+        function debounce(func, wait) { /* ... (no change) ... */
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => { clearTimeout(timeout); func(...args); };
+                clearTimeout(timeout); timeout = setTimeout(later, wait);
+            };
+         }
+
+        // --- Global Resize Handler ---
+        function handleGlobalResize() { /* ... (no change) ... */
+            resizeMatrixCanvas(); resizeWarpCanvas();
+             if (appState.activeTab === 'matrix' && !appState.matrix.isPaused) { stopMatrix(false); startMatrix(); }
+             else if (appState.activeTab === 'warp' && !appState.warp.isPaused) { stopWarp(false); startWarp(); }
+        }
+
+        // --- Tab Switching Logic ---
+        function handleTabClick(event) {
+            const clickedTabId = event.target.dataset.tab;
+            if (clickedTabId === appState.activeTab) return;
+            pauseActiveTabProcess();
+            appState.activeTab = clickedTabId;
+
+            // Update theme class on main container
+            mainContainer.className = `main-container theme-${clickedTabId}`;
+
+            tabButtons.forEach(button => button.classList.toggle('active', button.dataset.tab === clickedTabId));
+            tabContents.forEach(content => content.classList.toggle('active', content.id === `${clickedTabId}-tab`));
+            showMessage(`Switched to ${clickedTabId.toUpperCase()} tab.`, 'info');
+        }
+        function pauseActiveTabProcess() { /* ... (no change) ... */
+             switch(appState.activeTab) {
+                case 'pi': if (!appState.pi.isPaused) pausePi(); break;
+                case 'matrix': if (!appState.matrix.isPaused) pauseMatrix(); break;
+                case 'warp': if (!appState.warp.isPaused) pauseWarp(); break;
+            }
+         }
+
+        // --- Pi Calculator Logic ---
+        function calculatePiDelay(sliderValue) { /* ... (no change) ... */
+             const min = 10; const max = 600; return Math.round(max - (sliderValue - 1) * ((max - min) / 9));
+        }
+        function* generatePiDigits() { /* ... (no change) ... */
+             let q = 1n; let r = 180n; let t = 60n; let i = 2n;
+             while (true) { let digit = ((i * 27n - 12n) * q + r * 5n) / (t * 5n); yield Number(digit); let u = i * 3n; u = (u + 1n) * 3n * (u + 2n); r = u * 10n * (q * (i * 5n - 2n) + r - t * digit); q = q * 10n * i * (i * 2n - 1n); t = t * u; i = i + 1n; }
+        }
+        function addPiDigit() {
+            const state = appState.pi;
+            if (!state.generator) state.generator = generatePiDigits();
+            const nextDigit = state.generator.next().value;
+            state.digits += nextDigit; state.displayElement.textContent = state.digits;
+            state.count++; state.countElement.textContent = state.count;
+            state.displayElement.scrollLeft = state.displayElement.scrollWidth;
+
+            // --- Confetti based on Complexity ---
+            // Trigger confetti burst more often or with more pieces at higher complexity
+            const confettiFrequency = Math.max(1, 50 - state.complexity * 4); // Lower interval for higher complexity
+            const confettiAmount = Math.max(1, state.complexity * 2); // More pieces for higher complexity
+            if (state.count % confettiFrequency === 0 && state.complexity > 0) {
+                 createConfettiBurst(confettiAmount, confettiContainer, state.confettiColors);
+            }
+
+            // Speed up logic (no change)
+            if (state.count % state.speedUpInterval === 0 && state.currentDelay > state.minDelay) { /* ... */
+                 state.currentDelay = Math.max(state.currentDelay * state.speedUpFactor, state.minDelay);
+                 state.delayDisplayElement.textContent = state.currentDelay.toFixed(1);
+                 if (!state.isPaused) runPiCalculation();
+            }
+        }
+        function runPiCalculation() { /* ... (no change) ... */
+             const state = appState.pi; if (state.intervalId) clearInterval(state.intervalId);
+             state.intervalId = setInterval(addPiDigit, state.currentDelay);
+             state.delayDisplayElement.textContent = state.currentDelay.toFixed(1);
+        }
+        function startPi() { /* ... (no change) ... */
+             const state = appState.pi; if (state.isPaused && !state.hasStarted) { state.isPaused = false; state.hasStarted = true; state.currentDelay = calculatePiDelay(state.baseSpeed); state.startBtn.style.display = 'none'; state.continueBtn.style.display = 'none'; state.pauseBtn.disabled = false; hideMessage(); runPiCalculation(); }
+        }
+        function continuePi() { /* ... (no change) ... */
+             const state = appState.pi; if (state.isPaused && state.hasStarted) { state.isPaused = false; state.startBtn.style.display = 'none'; state.continueBtn.style.display = 'none'; state.pauseBtn.disabled = false; hideMessage(); runPiCalculation(); }
+        }
+        function pausePi() { /* ... (no change) ... */
+             const state = appState.pi; if (!state.isPaused) { state.isPaused = true; clearInterval(state.intervalId); state.intervalId = null; state.startBtn.style.display = 'none'; state.continueBtn.style.display = 'inline-block'; state.pauseBtn.disabled = true; showMessage(`Pi calculation paused at ${state.count} digits.`, 'info'); }
+        }
+        function handlePiSpeedChange(event) { /* ... (no change) ... */
+             const state = appState.pi; state.baseSpeed = event.target.value; state.speedValueElement.textContent = state.baseSpeed; state.currentDelay = calculatePiDelay(state.baseSpeed); state.delayDisplayElement.textContent = state.currentDelay.toFixed(1); if (!state.isPaused) { runPiCalculation(); }
+        }
+        function handlePiComplexityChange(event) { // New
+            const state = appState.pi;
+            state.complexity = parseInt(event.target.value);
+            state.complexityValueElement.textContent = state.complexity;
+            // Confetti amount/frequency is handled within addPiDigit
+        }
+
+
+        // --- Matrix Logic ---
+        function calculateMatrixDelay(sliderValue) { /* ... (no change) ... */
+             const state = appState.matrix; return Math.round(state.maxDelay - (sliderValue - 1) * ((state.maxDelay - state.minDelay) / 9));
+        }
+        function resizeMatrixCanvas() { /* ... (no change) ... */
+             const state = appState.matrix; state.canvas.width = state.canvas.offsetWidth; state.canvas.height = state.canvas.offsetHeight; if (state.canvas.width === 0 || state.canvas.height === 0) return; state.columns = Math.floor(state.canvas.width / state.fontSize); state.drops = Array(state.columns).fill(1);
+        }
+        function drawMatrix() {
+            const state = appState.matrix;
+            if (state.isPaused || appState.activeTab !== 'matrix') return;
+
+            // --- Complexity Effects ---
+            // 1. Fading effect strength
+            const fadeAlpha = 0.08 - (state.complexity * 0.005); // Less fade (longer trails) at higher complexity
+            state.ctx.fillStyle = `rgba(0, 0, 0, ${Math.max(0.01, fadeAlpha)})`;
+            state.ctx.fillRect(0, 0, state.canvas.width, state.canvas.height);
+
+            // 2. Character color & potential glow
+            const mainColor = "#0F0"; // Base green
+            state.ctx.fillStyle = mainColor;
+            state.ctx.font = state.fontSize + "px monospace";
+            // Add glow at higher complexity
+            if (state.complexity > 6) {
+                state.ctx.shadowBlur = state.complexity - 5; // Increase blur with complexity
+                state.ctx.shadowColor = "rgba(0, 255, 0, 0.7)";
+            } else {
+                state.ctx.shadowBlur = 0; // No glow at lower complexity
+            }
+
+            let charsDrawnThisFrame = 0;
+            for (let i = 0; i < state.drops.length; i++) {
+                const text = state.chars.charAt(Math.floor(Math.random() * state.chars.length));
+                state.ctx.fillText(text, i * state.fontSize, state.drops[i] * state.fontSize);
+                charsDrawnThisFrame++;
+
+                // 3. Rain density (reset probability)
+                const resetProbability = 0.985 - (state.complexity * 0.002); // Higher chance to NOT reset at higher complexity (denser rain)
+                if (state.drops[i] * state.fontSize > state.canvas.height && Math.random() > resetProbability) {
+                    state.drops[i] = 0;
+                }
+                state.drops[i]++;
+            }
+            // Reset shadow after drawing all characters for this frame
+            state.ctx.shadowBlur = 0;
+
+            state.count += charsDrawnThisFrame;
+            state.countElement.textContent = state.count;
+
+            state.animationId = setTimeout(() => {
+                 requestAnimationFrame(drawMatrix);
+            }, state.currentDelay);
+        }
+        function startMatrix() { /* ... (no change) ... */
+             const state = appState.matrix; if (state.isPaused) { state.isPaused = false; state.startBtn.disabled = true; state.pauseBtn.disabled = false; state.currentDelay = calculateMatrixDelay(state.baseSpeed); state.delayDisplayElement.textContent = state.currentDelay.toFixed(1); hideMessage(); resizeMatrixCanvas(); drawMatrix(); }
+        }
+        function pauseMatrix() { /* ... (no change) ... */
+             const state = appState.matrix; if (!state.isPaused) { state.isPaused = true; clearTimeout(state.animationId); cancelAnimationFrame(drawMatrix); state.animationId = null; state.startBtn.disabled = false; state.pauseBtn.disabled = true; showMessage(`Matrix paused. Chars: ${state.count}`, 'info'); }
+        }
+        function stopMatrix(clearId = true) { /* ... (no change) ... */
+             const state = appState.matrix; state.isPaused = true; clearTimeout(state.animationId); cancelAnimationFrame(drawMatrix); if(clearId) state.animationId = null; state.startBtn.disabled = false; state.pauseBtn.disabled = true;
+        }
+        function handleMatrixSpeedChange(event) { /* ... (no change) ... */
+             const state = appState.matrix; state.baseSpeed = event.target.value; state.speedValueElement.textContent = state.baseSpeed; state.currentDelay = calculateMatrixDelay(state.baseSpeed); state.delayDisplayElement.textContent = state.currentDelay.toFixed(1);
+        }
+        function handleMatrixComplexityChange(event) { // New
+            const state = appState.matrix;
+            state.complexity = parseInt(event.target.value);
+            state.complexityValueElement.textContent = state.complexity;
+            // Effects are applied directly within drawMatrix
+        }
+
+
+        // --- Warp Drive Logic ---
+        function resizeWarpCanvas() { // Now uses complexity for starNum
+            const state = appState.warp;
+            state.canvas.width = state.canvas.offsetWidth;
+            state.canvas.height = state.canvas.offsetHeight;
+            if (state.canvas.width === 0 || state.canvas.height === 0) return;
+            state.starNum = state.complexity; // Use complexity value for star count
+            state.stars = Array.from({ length: state.starNum }, newWarpStar); // Create stars based on complexity
+        }
+        function newWarpStar() { /* ... (no change) ... */
+             const state = appState.warp; if (!state.canvas || state.canvas.width === 0) return {x:0, y:0, z: 1000}; const angle = Math.random() * Math.PI * 2; const radius = Math.random() * 50 + 10; return { x: state.canvas.width / 2 + Math.cos(angle) * radius, y: state.canvas.height / 2 + Math.sin(angle) * radius, z: Math.random() * state.canvas.width };
+        }
+        function drawWarp() { /* ... (no change in drawing logic itself) ... */
+             const state = appState.warp; if (state.isPaused || appState.activeTab !== 'warp') return; const centerX = state.canvas.width / 2; const centerY = state.canvas.height / 2; state.ctx.fillStyle = "rgba(0, 0, 0, 0.2)"; state.ctx.fillRect(0, 0, state.canvas.width, state.canvas.height); state.ctx.fillStyle = "#FFF";
+             for (let i = 0; i < state.stars.length; i++) { let star = state.stars[i]; star.z -= state.speed; if (star.z <= 0) { state.stars[i] = newWarpStar(); state.count++; star = state.stars[i]; } const k = 128.0 / star.z; const px = (star.x - centerX) * k + centerX; const py = (star.y - centerY) * k + centerY; const size = (1 - star.z / state.canvas.width) * 5; if (px > 0 && px < state.canvas.width && py > 0 && py < state.canvas.height && size > 0) { state.ctx.beginPath(); state.ctx.arc(px, py, size / 2, 0, Math.PI * 2); state.ctx.fill(); } }
+             state.countElement.textContent = state.count; state.animationId = requestAnimationFrame(drawWarp);
+        }
+        function startWarp() { /* ... (no change) ... */
+             const state = appState.warp; if (state.isPaused) { state.isPaused = false; state.startBtn.disabled = true; state.pauseBtn.disabled = false; hideMessage(); resizeWarpCanvas(); drawWarp(); }
+        }
+        function pauseWarp() { /* ... (no change) ... */
+             const state = appState.warp; if (!state.isPaused) { state.isPaused = true; cancelAnimationFrame(state.animationId); state.animationId = null; state.startBtn.disabled = false; state.pauseBtn.disabled = true; showMessage(`Warp Drive paused. Stars passed: ${state.count}`, 'info'); }
+        }
+        function stopWarp(clearId = true) { /* ... (no change) ... */
+             const state = appState.warp; state.isPaused = true; cancelAnimationFrame(state.animationId); if(clearId) state.animationId = null; state.startBtn.disabled = false; state.pauseBtn.disabled = true;
+        }
+        function handleWarpSpeedChange(event) { /* ... (no change) ... */
+             const state = appState.warp; state.speed = parseInt(event.target.value); state.speedValueElement.textContent = state.speed;
+        }
+        function handleWarpComplexityChange(event) { // New
+            const state = appState.warp;
+            state.complexity = parseInt(event.target.value);
+            state.complexityValueElement.textContent = state.complexity;
+            // Update starNum and regenerate stars immediately
+            state.starNum = state.complexity;
+            resizeWarpCanvas(); // This reinitializes stars based on the new starNum
+            // If animation is running, it will pick up the new stars array on the next frame
+        }
+
+
+        // --- Save/Load Logic ---
+        function saveState(tabId) { // Updated to include complexity
+            const stateToSave = appState[tabId];
+            let data = { /* ... (version, timestamp) ... */
+                 tab: tabId, version: 2, timestamp: new Date().toISOString(), state: {}
+             };
+            if (tabId === 'pi' && !stateToSave.isPaused) pausePi();
+            if (tabId === 'matrix' && !stateToSave.isPaused) pauseMatrix();
+            if (tabId === 'warp' && !stateToSave.isPaused) pauseWarp();
+
+            if (tabId === 'pi') {
+                data.state = { digits: stateToSave.digits, count: stateToSave.count, baseSpeed: stateToSave.baseSpeed, currentDelay: stateToSave.currentDelay, complexity: stateToSave.complexity }; // Added complexity
+            } else if (tabId === 'matrix') {
+                 data.state = { count: stateToSave.count, baseSpeed: stateToSave.baseSpeed, currentDelay: stateToSave.currentDelay, complexity: stateToSave.complexity }; // Added complexity
+            } else if (tabId === 'warp') {
+                 data.state = { count: stateToSave.count, speed: stateToSave.speed, complexity: stateToSave.complexity }; // Added complexity (starNum)
+            } else { /* ... error handling ... */ return; }
+
+            try { /* ... (blob creation and download) ... */
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `${tabId}_state_${new Date().getTime()}.json`; link.style.display = 'none'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(link.href); showMessage(`${tabId.toUpperCase()} state saved successfully.`, 'success');
+             } catch (error) { /* ... error handling ... */ }
+        }
+        function triggerLoadFile(tabId) { /* ... (no change) ... */
+             loadFileInput.dataset.targetTab = tabId; loadFileInput.click();
+        }
+        function handleFileLoad(event) { /* ... (no change) ... */
+            const file = event.target.files[0]; const targetTabId = event.target.dataset.targetTab; if (!file || !targetTabId) { /*...*/ return; } const reader = new FileReader(); reader.onload = (e) => { try { const loadedData = JSON.parse(e.target.result); if (!loadedData.tab || !loadedData.state || loadedData.tab !== targetTabId) { throw new Error(`Invalid or mismatched save file. Expected data for tab "${targetTabId}".`); } restoreState(loadedData.tab, loadedData.state); showMessage(`${loadedData.tab.toUpperCase()} state loaded successfully. Press Start/Continue.`, 'success'); } catch (error) { console.error("Error loading state:", error); showMessage(`Error loading file: ${error.message}`, 'error'); } finally { event.target.value = null; delete event.target.dataset.targetTab; } }; reader.onerror = () => { showMessage('Error reading file.', 'error'); event.target.value = null; delete event.target.dataset.targetTab; }; reader.readAsText(file);
+        }
+        function restoreState(tabId, savedState) { // Updated to restore complexity
+            const state = appState[tabId]; if (!state) return;
+            pauseActiveTabProcess(); if (tabId === 'pi') stopPi(); if (tabId === 'matrix') stopMatrix(); if (tabId === 'warp') stopWarp();
+
+            state.count = savedState.count ?? 0;
+            state.countElement.textContent = state.count;
+            state.complexity = savedState.complexity ?? 5; // Restore complexity (default 5)
+            state.complexitySlider.value = state.complexity;
+            state.complexityValueElement.textContent = state.complexity;
+
+            if (tabId === 'pi') {
+                state.digits = savedState.digits ?? ""; state.displayElement.textContent = state.digits;
+                state.baseSpeed = savedState.baseSpeed ?? 5; state.currentDelay = savedState.currentDelay ?? calculatePiDelay(state.baseSpeed);
+                state.speedSlider.value = state.baseSpeed; state.speedValueElement.textContent = state.baseSpeed; state.delayDisplayElement.textContent = state.currentDelay.toFixed(1);
+                state.isPaused = true; state.hasStarted = state.count > 0; state.generator = null;
+                state.startBtn.style.display = state.hasStarted ? 'none' : 'inline-block'; state.continueBtn.style.display = state.hasStarted ? 'inline-block' : 'none'; state.pauseBtn.disabled = true;
+            } else if (tabId === 'matrix') {
+                state.baseSpeed = savedState.baseSpeed ?? 5; state.currentDelay = savedState.currentDelay ?? calculateMatrixDelay(state.baseSpeed);
+                state.speedSlider.value = state.baseSpeed; state.speedValueElement.textContent = state.baseSpeed; state.delayDisplayElement.textContent = state.currentDelay.toFixed(1);
+                state.isPaused = true; state.animationId = null; state.startBtn.disabled = false; state.pauseBtn.disabled = true;
+                resizeMatrixCanvas(); state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
+            } else if (tabId === 'warp') {
+                state.speed = savedState.speed ?? 3; state.speedSlider.value = state.speed; state.speedValueElement.textContent = state.speed;
+                state.starNum = state.complexity; // Set starNum from loaded complexity
+                state.isPaused = true; state.animationId = null; state.startBtn.disabled = false; state.pauseBtn.disabled = true;
+                resizeWarpCanvas(); state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height);
+            }
+
+            if (appState.activeTab !== tabId) { document.querySelector(`.tab-button[data-tab="${tabId}"]`).click(); }
+        }
+        function stopPi() { /* ... (no change) ... */
+             const state = appState.pi; state.isPaused = true; clearInterval(state.intervalId); state.intervalId = null; state.startBtn.style.display = state.hasStarted ? 'none' : 'inline-block'; state.continueBtn.style.display = state.hasStarted ? 'inline-block' : 'none'; state.pauseBtn.disabled = true;
+        }
+        function stopMatrix(clearId = true) { /* ... (no change) ... */
+             const state = appState.matrix; state.isPaused = true; clearTimeout(state.animationId); cancelAnimationFrame(drawMatrix); if(clearId) state.animationId = null; state.startBtn.disabled = false; state.pauseBtn.disabled = true;
+        }
+        function stopWarp(clearId = true) { /* ... (no change) ... */
+             const state = appState.warp; state.isPaused = true; cancelAnimationFrame(state.animationId); if(clearId) state.animationId = null; state.startBtn.disabled = false; state.pauseBtn.disabled = true;
+        }
+
+        // --- Utility Functions ---
+        function showMessage(text, type = 'info') { /* ... (no change) ... */
+             messageBox.textContent = text; messageBox.className = `message-box ${type}`; messageBox.style.display = 'block';
+        }
+        function hideMessage() { messageBox.style.display = 'none'; }
+        function createConfettiBurst(count = 10, container = mainContainer, colors = appState.pi.confettiColors) { // Added colors param
+             for (let i = 0; i < count; i++) { setTimeout(() => createConfetti(container, colors), i * 20); }
+        }
+        function createConfetti(container, colors) { // Added colors param
+            const confetti = document.createElement('div'); confetti.classList.add('confetti');
+            confetti.style.left = `${Math.random() * 100}%`;
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]; // Use passed colors
+            const size = Math.random() * 4 + 4; confetti.style.width = `${size}px`; confetti.style.height = `${size * 1.8}px`; // Rectangular
+            confetti.style.animationDuration = `${Math.random() * 1.5 + 2}s`;
+            // Append to the specific confetti container, not mainContainer
+            document.getElementById('confetti-container').appendChild(confetti);
+            confetti.addEventListener('animationend', () => { confetti.remove(); });
+        }
+
+        // --- Start the App ---
+        initializeTabs();
+
+    </script>
+
+</body>
+</html>
